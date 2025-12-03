@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const LoginPage: React.FC = () => {
@@ -21,28 +21,50 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div>
-            <h2>Đăng nhập</h2>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Tên đăng nhập:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2 className="auth-title">Đăng nhập</h2>
+                <p className="auth-subtitle">Chào mừng bạn quay trở lại</p>
+                
+                <form onSubmit={handleLogin}>
+                    <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', fontWeight: 500 }}>
+                            Tên đăng nhập
+                        </label>
+                        <input
+                            className="input"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Nhập username..."
+                        />
+                    </div>
+                    <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', fontWeight: 500 }}>
+                            Mật khẩu
+                        </label>
+                        <input
+                            className="input"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Nhập mật khẩu..."
+                        />
+                    </div>
+                    
+                    {error && <div style={{ color: '#ef4444', marginBottom: '10px', fontSize: '0.9rem' }}>{error}</div>}
+                    
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '8px' }}>
+                        Đăng nhập
+                    </button>
+                </form>
+
+                <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.9rem' }}>
+                    <Link to="/forgot-password" style={{ color: 'var(--color-accent)' }}>
+                        Quên mật khẩu?
+                    </Link>
                 </div>
-                <div>
-                    <label>Mật khẩu:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                {error && <div style={{ color: 'red' }}>{error}</div>}
-                <button type="submit">Đăng nhập</button>
-            </form>
+            </div>
         </div>
     );
 };

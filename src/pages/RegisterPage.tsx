@@ -8,6 +8,8 @@ const RegisterPage: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const navigate = useNavigate();
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -17,7 +19,7 @@ const RegisterPage: React.FC = () => {
         setSuccess('');
 
         // --- 1. Validation phía Client ---
-        if (!username || !password || !confirmPassword) {
+        if (!username || !password || !confirmPassword || !email || !phoneNumber) {
             setError('Vui lòng điền đầy đủ thông tin.');
             return;
         }
@@ -32,16 +34,22 @@ const RegisterPage: React.FC = () => {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Email không hợp lệ.");
+            return;
+        }
+
         // --- 2. Gọi API để đăng ký ---
         try {
-            const response = await register(username, password);
+            await register(username, password, email, phoneNumber);
             // Xử lý khi đăng ký thành công
-            setSuccess('Đăng ký tài khoản thành công! Bạn sẽ được chuyển đến trang đăng nhập sau 3 giây.');
+            setSuccess('Đăng ký tài khoản thành công! Vui lòng kiểm tra email để nhập mã OTP xác thực.');
 
-            // Tự động chuyển hướng đến trang đăng nhập sau 3 giây
+            // Tự động chuyển hướng đến trang xác thực email sau 2 giây
             setTimeout(() => {
-                navigate('/login');
-            }, 3000);
+                navigate('/verify-email', { state: { username } });
+            }, 2000);
             
         } catch (err) {
             const error = err as any;
@@ -55,54 +63,86 @@ const RegisterPage: React.FC = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>Đăng ký tài khoản</h2>
-            <form onSubmit={handleRegister}>
-                <div style={{ marginBottom: '15px' }}>
-                    <label htmlFor="username">Tên đăng nhập:</label>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2 className="auth-title">Đăng ký tài khoản</h2>
+                <p className="auth-subtitle">
+                    Tạo tài khoản để bắt đầu mượn và quản lý sách trực tuyến.
+                </p>
+
+                <form onSubmit={handleRegister} style={{ display: 'grid', gap: 12 }}>
+                    <div>
+                    <label htmlFor="username">Tên đăng nhập</label>
                     <input
+                        className="input"
                         type="text"
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
                         required
                     />
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                    <label htmlFor="password">Mật khẩu:</label>
+                    </div>
+
+                    <div>
+                    <label htmlFor="password">Mật khẩu</label>
                     <input
+                        className="input"
                         type="password"
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
                         required
                     />
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                    <label htmlFor="confirmPassword">Xác nhận mật khẩu:</label>
+                    </div>
+
+                    <div>
+                    <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
                     <input
+                        className="input"
                         type="password"
                         id="confirmPassword"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
                         required
                     />
-                </div>
+                    </div>
 
-                {/* Hiển thị thông báo lỗi hoặc thành công */}
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                {success && <p style={{ color: 'green' }}>{success}</p>}
+                    <div>
+                    <label htmlFor="email">Email</label>
+                    <input
+                        className="input"
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    </div>
 
-                <button 
-                    type="submit" 
-                    style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                Đăng ký
-                </button>
-            </form>
+                    <div>
+                    <label htmlFor="phone">Số điện thoại</label>
+                    <input
+                        className="input"
+                        type="tel"
+                        id="phone"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    {error && <p style={{ color: 'red', fontSize: '0.85rem' }}>{error}</p>}
+                    {success && <p style={{ color: 'green', fontSize: '0.85rem' }}>{success}</p>}
+
+                    <button
+                    type="submit"
+                    className="btn btn-primary"
+                    style={{ width: '100%', marginTop: 4 }}
+                    >
+                    Đăng ký
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
