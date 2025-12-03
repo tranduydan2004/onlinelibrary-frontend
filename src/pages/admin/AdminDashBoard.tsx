@@ -1,24 +1,38 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const AdminDashBoard: React.FC = () => {
-    return ( 
-        <div>
-            <h1>Trang Quản Trị</h1>
-            <nav>
-                <Link to="/admin" style={{ marginRight: '10px' }}>Quản lý Mượn/Trả</Link>
-                <Link to="/admin/books" style={{ marginRight: '10px' }}>Quản lý Sách</Link>
-                <Link to="/admin/users" style={{ marginRight: '10px' }}>Quản lý Người Dùng</Link>
-            </nav>
+    const location = useLocation();
 
-            <div style={{ marginTop: '20px'}}>
-                {/* <Outlet />:
-                  React Router sẽ tự động render component con (ManageLoans, ManageBooks, ...)
-                  tương ứng với URL vào vị trí này.
-                */}
+    const tabClass = (path: string) => location.pathname === path ? 'admin-tab admin-tab-active' : 'admin-tab';
+
+    return ( 
+        <section className="card">
+            <div className="admin-header">
+                <div>
+                <h1 className="page-title">Khu vực quản trị</h1>
+                <p className="page-subtitle">
+                    Quản lý yêu cầu mượn/trả, danh mục sách và tài khoản người dùng.
+                </p>
+                </div>
+
+                <div className="admin-tabs">
+                <Link to="/admin" className={tabClass('/admin')}>
+                    Mượn / Trả
+                </Link>
+                <Link to="/admin/books" className={tabClass('/admin/books')}>
+                    Sách
+                </Link>
+                <Link to="/admin/users" className={tabClass('/admin/users')}>
+                    Người dùng
+                </Link>
+                </div>
+            </div>
+
+            <div className="table-card">
                 <Outlet />
             </div>
-        </div>
+        </section>
     );
 };
 
