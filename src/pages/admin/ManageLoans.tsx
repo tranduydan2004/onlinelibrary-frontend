@@ -49,9 +49,9 @@ const ManageLoans = () => {
     };
 
     return (
-        <div>
-            <h3>Quản lý Yêu cầu Mượn/Trả</h3>
-            <table border={1} cellPadding={5} style={{ borderCollapse: 'collapse', width: '100%'}}>
+        <div className="card table-card">
+            <h3 className='page-title' style={{ fontSize: '1.1rem' }}>Quản lý Yêu cầu Mượn/Trả</h3>
+            <table className='table-modern'>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -74,12 +74,12 @@ const ManageLoans = () => {
                             <td>
                                 {loan.status === 'Đang chờ duyệt' && (
                                     <>
-                                      <button onClick={() => handleApprove(loan.id)} style={{ marginRight: '5px' }}>Duyệt</button>
-                                      <button onClick={() => handleReject(loan.id)}>Từ chối</button>
+                                      <button className='btn btn-ghost' onClick={() => handleApprove(loan.id)}>Duyệt</button>
+                                      <button className='btn btn-ghost' onClick={() => handleReject(loan.id)}>Từ chối</button>
                                     </>
                                 )}
                                 {(loan.status === 'Đang mượn' || loan.status === 'Quá hạn') && (
-                                    <button onClick={() => handleReturn(loan.id)}>Xác nhận trả</button>
+                                    <button className='btn btn-ghost' onClick={() => handleReturn(loan.id)}>Xác nhận trả</button>
                                 )}
                             </td>
                         </tr>
@@ -93,19 +93,18 @@ const ManageLoans = () => {
 
             {/* Phân trang */}
             {totalPages > 1 && (
-                <div style={{ marginTop: '10px' }}>
-                    <button disabled={page === 1} onClick={() => fetchLoans(page - 1)}>
+                <div className='pagination'>
+                    <button className='btn btn-ghost' disabled={page === 1} onClick={() => fetchLoans(page - 1)}>
                         Trang trước
                     </button>
 
-                    <span style={{ margin: '0 8px' }}>
+                    <span>
                         Trang {page}/{totalPages}
                     </span>
 
-                    <button disabled={page === totalPages} onClick={() => fetchLoans(page + 1)}>
+                    <button className='btn btn-ghost' disabled={page === totalPages} onClick={() => fetchLoans(page + 1)}>
                         Trang sau
                     </button>
-
                 </div>
             )}
         </div>

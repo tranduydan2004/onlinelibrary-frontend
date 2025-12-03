@@ -32,14 +32,16 @@ const ManageUser = () => {
     };
 
     return (
-        <div>
-            <h3>Quản lý Người Dùng</h3>
-            <table border={1} cellPadding={5} style={{ borderCollapse: 'collapse', width: '100%'}}>
+        <div className='card table-card'>
+            <h3 className="page-title" style={{ fontSize: '1.1rem' }}>Quản lý Người Dùng</h3>
+            <table className='table-modern'>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Tên Đăng nhập</th>
                         <th>Vai trò (Role)</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
@@ -51,10 +53,12 @@ const ManageUser = () => {
                             <td>{user.id}</td>
                             <td>{user.username}</td>
                             <td>{user.role}</td>
+                            <td>{user.email}</td>
+                            <td>{user.phoneNumber}</td>
                             <td>{user.isLocked ? 'Đã khóa' : 'Hoạt động'}</td>
                             <td>
                                 {user.role !== 'Admin' && (
-                                    <button onClick={() => handleToggleLock(user.id)}>
+                                    <button className='btn btn-ghost' onClick={() => handleToggleLock(user.id)}>
                                         {user.isLocked ? 'Mở khóa' : 'Khóa'}
                                     </button>
                                 )}
@@ -66,16 +70,16 @@ const ManageUser = () => {
 
             {/* Phân trang */}
             {totalPages > 1 && (
-                <div style={{ marginTop: '10px' }}>
-                    <button disabled={page === 1} onClick={() => fetchUser(page - 1)}>
+                <div className='pagination'>
+                    <button className='btn btn-ghost' disabled={page === 1} onClick={() => fetchUser(page - 1)}>
                         Trang trước
                     </button>
 
-                    <span style={{ margin: '0 8px' }}>
+                    <span>
                         Trang {page}/{totalPages}
                     </span>
 
-                    <button disabled={page === totalPages} onClick={() => fetchUser(page + 1)}>
+                    <button className='btn btn-ghost' disabled={page === totalPages} onClick={() => fetchUser(page + 1)}>
                         Trang sau
                     </button>
 

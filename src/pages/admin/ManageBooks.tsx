@@ -16,7 +16,7 @@ const ManageBooks = () => {
     const [quantity, setQuantity] = useState<string>('1');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [coverImageUrl, setCoverImageUrl] = useState<string>('');
+    // const [coverImageUrl, setCoverImageUrl] = useState<string>('');
     const [coverFile, setCoverFile] = useState<File | null>(null);
 
     const [editingBook, setEditingBook] = useState<IBook | null>(null);
@@ -147,162 +147,205 @@ const ManageBooks = () => {
 
     return (
         <div>
-            {/* Form thêm sách mới */}
-            <div>
-                <h3>Thêm sách mới</h3>
-                <form onSubmit={handleAddBook}>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label>Tên sách: </label>
-                        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label>Tác giả: </label>
-                        <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label>Thể loại: </label>
-                        <input type="text" value={genre} onChange={(e) => setGenre(e.target.value)} required />
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label>Số lượng: </label>
-                        <input type="number" value={quantity} min={1} onChange={(e) => setQuantity(e.target.value)} required />
-                    </div>
+            {/* Form thêm */}
+            <div className="card" style={{ marginBottom: 18 }}>
+                <h3 className="page-title" style={{ fontSize: '1.2rem' }}>
+                Thêm sách mới
+                </h3>
+                <p className="page-subtitle">Nhập thông tin sách và (tuỳ chọn) tải ảnh bìa.</p>
+
+                <form onSubmit={handleAddBook} style={{ display: 'grid', gap: 10 }}>
                     <div>
-                        <label>URL Ảnh Bìa (tùy chọn): </label>
+                        <label>Tên sách</label>
+                        <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                    </div>
+
+                    <div>
+                        <label>Tác giả</label>
+                        <input className="input" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+                    </div>
+
+                    <div>
+                        <label>Thể loại</label>
+                        <input className="input" value={genre} onChange={(e) => setGenre(e.target.value)} required />
+                    </div>
+
+                    <div>
+                        <label>Số lượng</label>
+                        <input
+                        className="input"
+                        type="number"
+                        min={1}
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        required
+                        />
+                    </div>
+
+                    <div>
+                        <label>Ảnh bìa (tùy chọn)</label>
                         <input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />
                     </div>
-                    <button type="submit">Thêm sách</button>
+
+                    <div>
+                        <button type="submit" className="btn btn-primary">
+                        Thêm sách
+                        </button>
+                    </div>
+
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                     {success && <p style={{ color: 'green' }}>{success}</p>}
                 </form>
-
-                {/* Form chỉnh sửa sách */}
-                {editingBook && (
-                    <div style={{ marginTop: '20px' }}>
-                        <h3>Chỉnh sửa sách (ID: {editingBook.id})</h3>
-                        <form onSubmit={handleUpdateBook}>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Tên sách: </label>
-                            <input
-                            type="text"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            required
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Tác giả: </label>
-                            <input
-                            type="text"
-                            value={editAuthor}
-                            onChange={(e) => setEditAuthor(e.target.value)}
-                            required
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Thể loại: </label>
-                            <input
-                            type="text"
-                            value={editGenre}
-                            onChange={(e) => setEditGenre(e.target.value)}
-                            required
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Số lượng (tồn kho): </label>
-                            <input
-                                type="number"
-                                min={0}
-                                value={editQuantity}
-                                onChange={(e) => setEditQuantity(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Ảnh bìa hiện tại: </label>
-                            {editingBook.coverImageUrl ? (
-                            <img
-                                src={editingBook.coverImageUrl}
-                                alt={editingBook.title}
-                                style={{ width: '50px', height: '75px', objectFit: 'cover', marginLeft: '8px' }}
-                            />
-                            ) : (
-                            <span> Chưa có ảnh</span>
-                            )}
-                        </div>
-                        <div style={{ marginBottom: '10px' }}>
-                            <label>Chọn ảnh bìa mới (tùy chọn): </label>
-                            <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setEditCoverFile(e.target.files?.[0] ?? null)}
-                            />
-                        </div>
-                        <button type="submit">Lưu thay đổi</button>
-                        <button
-                            type="button"
-                            style={{ marginLeft: '10px' }}
-                            onClick={() => setEditingBook(null)}
-                        > Hủy
-                        </button>
-                        </form>
-                    </div>
-                )}
             </div>
 
-            <hr style={{ margin: '20px 0' }} />
+            {/* Form sửa */}
+            {editingBook && (
+                <div className="card" style={{ marginBottom: 18 }}>
+                    <h3 className="page-title" style={{ fontSize: '1.1rem' }}>
+                        Chỉnh sửa sách (ID: {editingBook.id})
+                    </h3>
+                <form onSubmit={handleUpdateBook} style={{ display: 'grid', gap: 10 }}>
+                    <div>
+                    <label>Tên sách</label>
+                    <input className="input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} required />
+                    </div>
 
-            {/* Danh sách sách */}
-            <h3>Danh sách Sách</h3>
-            <table border={1} cellPadding={5} style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên Sách</th>
-                        <th>Tác giả</th>
-                        <th>Thể loại</th>
-                        <th>Số lượng (Tồn)</th>
-                        <th>Ảnh Bìa</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {books.map(book => (
-                        <tr key={book.id}>
-                            <td>{book.id}</td>
-                            <td>{book.title}</td>
-                            <td>{book.author}</td>
-                            <td>{book.genre}</td>
-                            <td>{book.quantity}</td>
-                            <td>
-                                {book.coverImageUrl ? <img src={book.coverImageUrl} alt={book.title} style={{ width: '50px', height: '75px', objectFit: 'cover' }} /> : 'Chưa có ảnh'}
-                            </td>
-                            <td>
-                                <button onClick={() => startEditBook(book)}>Sửa</button>
-                                <button onClick={() => handleDelete(book.id)} style={{ color: 'red' }}>Xóa</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                    <div>
+                    <label>Tác giả</label>
+                    <input className="input" value={editAuthor} onChange={(e) => setEditAuthor(e.target.value)} required />
+                    </div>
 
-            {/* Phân trang */}
-            {totalPages > 1 && (
-                <div style={{ marginTop: '10px' }}>
-                    <button disabled={page === 1} onClick={() => fetchBooks(page - 1)}>
-                        Trang trước
+                    <div>
+                    <label>Thể loại</label>
+                    <input className="input" value={editGenre} onChange={(e) => setEditGenre(e.target.value)} required />
+                    </div>
+
+                    <div>
+                    <label>Số lượng (tồn kho)</label>
+                    <input
+                        className="input"
+                        type="number"
+                        min={0}
+                        value={editQuantity}
+                        onChange={(e) => setEditQuantity(e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <div>
+                    <label>Ảnh bìa hiện tại</label>{' '}
+                    {editingBook.coverImageUrl ? (
+                        <img
+                        src={editingBook.coverImageUrl}
+                        alt={editingBook.title}
+                        style={{ width: 50, height: 75, objectFit: 'cover', marginLeft: 8 }}
+                        />
+                    ) : (
+                        <span>Chưa có ảnh</span>
+                    )}
+                    </div>
+
+                    <div>
+                    <label>Chọn ảnh bìa mới (tùy chọn)</label>
+                    <input type="file" accept="image/*" onChange={(e) => setEditCoverFile(e.target.files?.[0] ?? null)} />
+                    </div>
+
+                    <div>
+                    <button type="submit" className="btn btn-primary">
+                        Lưu thay đổi
                     </button>
-
-                    <span style={{ margin: '0 8px' }}>
-                        Trang {page}/{totalPages}
-                    </span>
-
-                    <button disabled={page === totalPages} onClick={() => fetchBooks(page + 1)}>
-                        Trang sau
+                    <button
+                        type="button"
+                        className="btn btn-ghost"
+                        style={{ marginLeft: 8 }}
+                        onClick={() => setEditingBook(null)}
+                    >
+                        Hủy
                     </button>
-
+                    </div>
+                </form>
                 </div>
             )}
+
+            {/* Bảng sách */}
+            <div className="card table-card">
+                <h3 className="page-title" style={{ fontSize: '1.1rem' }}>
+                Danh sách sách
+                </h3>
+
+                <table className="table-modern">
+                <thead>
+                    <tr>
+                    <th>ID</th>
+                    <th>Tên sách</th>
+                    <th>Tác giả</th>
+                    <th>Thể loại</th>
+                    <th>Tồn kho</th>
+                    <th>Ảnh bìa</th>
+                    <th>Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {books.map((book) => (
+                    <tr key={book.id}>
+                        <td>{book.id}</td>
+                        <td>{book.title}</td>
+                        <td>{book.author}</td>
+                        <td>{book.genre}</td>
+                        <td>{book.quantity}</td>
+                        <td>
+                        {book.coverImageUrl ? (
+                            <img
+                            src={book.coverImageUrl}
+                            alt={book.title}
+                            style={{ width: 40, height: 60, objectFit: 'cover' }}
+                            />
+                        ) : (
+                            'Chưa có ảnh'
+                        )}
+                        </td>
+                        <td>
+                        <button className="btn btn-ghost" onClick={() => startEditBook(book)}>
+                            Sửa
+                        </button>
+                        <button
+                            className="btn btn-ghost"
+                            style={{ color: '#b91c1c' }}
+                            onClick={() => handleDelete(book.id)}
+                        >
+                            Xóa
+                        </button>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>  
+                </table>
+
+                {totalPages > 1 && (
+                <div className="pagination">
+                    <button
+                    className="btn btn-ghost"
+                    disabled={page === 1}
+                    onClick={() => fetchBooks(page - 1)}
+                    >
+                    Trang trước
+                    </button>
+
+                    <span>
+                    Trang {page}/{totalPages}
+                    </span>
+                    
+                    <button
+                    className="btn btn-ghost"
+                    disabled={page === totalPages}
+                    onClick={() => fetchBooks(page + 1)}
+                    >
+                    Trang sau
+                    </button>
+                </div>
+                )}
+            </div>
         </div>
     );
 };
