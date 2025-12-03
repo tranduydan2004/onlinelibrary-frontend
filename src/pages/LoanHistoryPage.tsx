@@ -43,34 +43,60 @@ const LoanHistoryPage: React.FC = () => {
 
     return (
         <div>
-            <h2>Lịch sử mượn sách</h2>
-            <ul>
-                {history.map((loan) => (
-                    <li key={loan.id}>
-                        {loan.bookTitle} - {loan.status}
-                        {loan.status === 'Đang mượn' && (
-                            <button onClick={() => handleExtend(loan.id)}>Gia hạn</button>
+            <h1 className="page-title">Lịch sử mượn trả</h1>
+            <div className="card">
+                <table className="table-modern" style={{ width: '100%' }}>
+                    <thead>
+                        <tr>
+                            <th>Sách</th>
+                            <th>Trạng thái</th>
+                            <th>Hạn trả</th>
+                            <th style={{textAlign: 'right'}}>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {history.map((loan) => (
+                            <tr key={loan.id}>
+                                <td style={{fontWeight: 500}}>{loan.bookTitle}</td>
+                                <td>
+                                    <span className="badge" style={{
+                                        backgroundColor: loan.status === 'Đang mượn' ? '#dbeafe' : '#f3f4f6',
+                                        color: loan.status === 'Đang mượn' ? '#1e40af' : '#374151'
+                                    }}>
+                                        {loan.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    {loan.dueDate ? new Date(loan.dueDate).toLocaleDateString('vi-VN') : '-'}
+                                </td>
+                                <td style={{textAlign: 'right'}}>
+                                    {loan.status === 'Đang mượn' && (
+                                        loan.canExtend ? (
+                                            <button className="btn btn-ghost" style={{padding: '4px 10px', fontSize: '0.8rem'}} onClick={() => handleExtend(loan.id)}>
+                                                Gia hạn
+                                            </button>
+                                        ) : (
+                                            <span style={{ fontSize: '0.8rem', color: '#9ca3af' }}>Hết lượt gia hạn</span>
+                                        )
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                         {history.length === 0 && (
+                            <tr><td colSpan={4} style={{textAlign: 'center'}}>Chưa có lịch sử mượn.</td></tr>
                         )}
-                    </li>
-                ))}
-            </ul>
+                    </tbody>
+                </table>
 
-            {/* Phân trang */}
-            {totalPages > 1 && (
-                <div>
-                    <button disabled={page === 1} onClick={() => handleChangePage(page - 1)}>
-                        Trang trước
-                    </button>
-
-                    <span style={{ margin: '0 8px'}}>
-                        Trang {page}/{totalPages}
-                    </span>
-
-                    <button disabled={page === totalPages} onClick={() => handleChangePage(page + 1)}>
-                        Trang sau
-                    </button>
-                </div>
-            )}
+                {/* Phân trang */}
+                {totalPages > 1 && (
+                    <div className="pagination">
+                        <button className="btn btn-ghost" disabled={page === 1} onClick={() => handleChangePage(page - 1)}>Trước</button>
+                        <span>{page}/{totalPages}</span>
+                        <button className="btn btn-ghost" disabled={page === totalPages} onClick={() => handleChangePage(page + 1)}>Sau</button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
