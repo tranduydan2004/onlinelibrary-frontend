@@ -7,6 +7,7 @@ interface AuthContextType {
     user: IUser | null;
     login: (username: string, password: string) => Promise<void>;
     logout: () => void;
+    loading: boolean; //1. Thêm loading
 }
 
 interface AuthProviderProps {
@@ -28,7 +29,7 @@ const mapTokenToUser = (token: string): IUser => {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<IUser | null>(null);
-
+    const [loading, setLoading] = useState(true); //2. Khởi tạo loading là true
     useEffect(() => {
         // Kiểm tra token trong localStorage khi tải trang
         const token = localStorage.getItem('token');
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 localStorage.removeItem('token');
             }
         }
+        setLoading(false); //3. Đã kiểm tra xong, tắt loading
     }, []);
 
     const login = async (username: string, password: string) => {
@@ -59,8 +61,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
     };
 
+    //4. Truyền loading vào Provider
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
