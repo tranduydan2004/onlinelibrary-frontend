@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getBookById } from '../services/bookService';
 import { requestLoan } from '../services/loanService';
 import { IBook } from '../types';
@@ -9,7 +9,7 @@ const BookDetailPage: React.FC = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const { id } = useParams<{ id: string }>();
-
+    const navigate = useNavigate();
     useEffect(() => {
         if (id) {
             const fetchBook = async () => {
@@ -40,23 +40,46 @@ const BookDetailPage: React.FC = () => {
     if (!book) return <div>Đang tải thông tin sách...</div>;
 
     return (
-        <div>
-            <h1>{book.title}</h1>
-            <p><strong>Tác giả:</strong> {book.author}</p>
-            <p><strong>Thể loại:</strong> {book.genre}</p>
-            <p><strong>Số lượng còn:</strong> {book.quantity}</p>
-            <p>
-                {book.coverImageUrl ? <img src={book.coverImageUrl} alt={book.title} style={{ width: '100px', height: '150px', objectFit: 'cover' }} /> : 'Chưa có ảnh'}
-            </p>
+        <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <button onClick={() => navigate(-1)} className="btn btn-ghost" style={{marginBottom: '10px'}}>← Quay lại</button>
+            
+            <div style={{ display: 'flex', gap: '30px', flexDirection: 'row', flexWrap: 'wrap' }}>
+                {/* Cột ảnh */}
+                <div style={{ flex: '0 0 200px' }}>
+                     <img 
+                        src={book.coverImageUrl || 'https://via.placeholder.com/200x300'} 
+                        alt={book.title} 
+                        style={{ width: '100%', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }} 
+                    />
+                </div>
 
-            <button
-                onClick={handleBorrow}
-                disabled={book.quantity === 0}>
-                    {book.quantity === 0 ? 'Đã hết sách' : 'Mượn sách'}
-            </button>
+                {/* Cột thông tin */}
+                <div style={{ flex: 1 }}>
+                    <h1 className="page-title" style={{marginBottom: '5px'}}>{book.title}</h1>
+                    <p style={{ color: 'var(--color-muted)', marginBottom: '20px', fontSize: '1.1rem' }}>{book.author}</p>
 
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red'}}>{error}</p>}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+                        <div>
+                            <strong>Thể loại:</strong> <span className="badge badge-soft">{book.genre}</span>
+                        </div>
+                        <div>
+                            <strong>Tình trạng:</strong> {book.quantity > 0 ? <span style={{color: 'green'}}>Còn sách ({book.quantity})</span> : <span style={{color: 'red'}}>Hết sách</span>}
+                        </div>
+                    </div>
+
+                    {message && <p style={{ color: '#10b981', fontWeight: 500, marginBottom: '10px' }}>{message}</p>}
+                    {error && <p style={{ color: '#ef4444', marginBottom: '10px' }}>{error}</p>}
+
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleBorrow}
+                        disabled={book.quantity === 0}
+                        style={{ padding: '10px 24px' }}
+                    >
+                        {book.quantity === 0 ? 'Đã hết sách' : 'Đăng ký mượn'}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
