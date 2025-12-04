@@ -3,9 +3,9 @@ import { IAdminLoan, IAdminUser, IBook, IPagedResponse } from '../types';
 import { Form } from 'react-router-dom';
 
 // --- QUẢN LÝ YÊU CẦU MƯỢN/TRẢ ---
-export const getAllLoans = (pageNumber = 1, pageSize = 10) => {
+export const getAllLoans = (pageNumber = 1, pageSize = 10, fromDate?: string, toDate?: string) => {
     return api.get<IPagedResponse<IAdminLoan>>('/admin/loan/all', {
-        params: { pageNumber, pageSize },
+        params: { pageNumber, pageSize, ...(fromDate ? { fromDate } : {}), ...(toDate ? { toDate } : {}) },
     });
 }
 
