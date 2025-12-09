@@ -65,3 +65,12 @@ export interface IUserProfile {
     phoneNumber: string | null;
     emailConfirmed: boolean;
 }
+
+export interface IAdminDashboardStats {
+    totalBooks: number;
+    booksAddedToday: number;
+    booksAddedThisWeek: number;
+    booksAddedThisMonth: number;
+    totalUsers: number;
+    pendingLoanRequests: number;
+}

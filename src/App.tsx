@@ -9,7 +9,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import AdminDashBoard from './pages/admin/AdminDashBoard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import LoanHistoryPage from './pages/LoanHistoryPage';
 import BookDetailPage from './pages/BookDetailPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -52,13 +52,11 @@ function App() {
 
               {/* Admin */}
               <Route element={<ProtectedRoute adminOnly={true} />}>
-                <Route path="/admin" element={<AdminDashBoard />}>
-                  <Route index element={<ManageLoans />} />
-                  <Route path="books" element={<ManageBooks />} />
-                  <Route path="users" element={<ManageUser />} />
-                </Route>
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/loans" element={<ManageLoans />} />
+                <Route path="/admin/books" element={<ManageBooks />} />
+                <Route path="/admin/users" element={<ManageUser />} />
               </Route>
-
             </Routes>
           </main>
           <Footer />
