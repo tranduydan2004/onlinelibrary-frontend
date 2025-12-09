@@ -72,7 +72,7 @@ const BooksByGenrePage: React.FC = () => {
                         
                         <div className="book-meta-row">
                             <span className={`badge ${book.quantity > 0 ? 'badge-soft' : ''}`} style={{background: book.quantity > 0 ? '' : '#f3f4f6', color: book.quantity > 0 ? '' : '#9ca3af'}}>
-                                {book.quantity > 0 ? `Còn: ${book.quantity}` : 'Hết hàng'}
+                                {book.quantity > 0 ? `Còn: ${book.quantity}` : 'Hết sách'}
                             </span>
                         </div>
 

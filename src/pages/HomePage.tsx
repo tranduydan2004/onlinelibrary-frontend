@@ -3,7 +3,7 @@ import { searchBooks } from '../services/bookService';
 import { IBook } from '../types';
 import { useNavigate } from 'react-router-dom';
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 15;
 
 const HomePage: React.FC = () => {
   const [books, setBooks] = useState<IBook[]>([]);
@@ -82,7 +82,7 @@ const HomePage: React.FC = () => {
 
         <aside className="hero-side">
           <div className="hero-card">
-            <div className="hero-card-title">Hoạt động hôm nay</div>
+            <div className="hero-card-title">Sách đang hiển thị</div>
             <div className="hero-card-number">{books.length.toString().padStart(2, '0')}</div>
             <div className="hero-card-grid">
               <div>

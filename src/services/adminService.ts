@@ -1,6 +1,5 @@
 import api from './api';
-import { IAdminLoan, IAdminUser, IBook, IPagedResponse } from '../types';
-import { Form } from 'react-router-dom';
+import { IAdminLoan, IAdminUser, IBook, IPagedResponse, IAdminDashboardStats } from '../types';
 
 // --- QUẢN LÝ YÊU CẦU MƯỢN/TRẢ ---
 export const getAllLoans = (pageNumber = 1, pageSize = 10, fromDate?: string, toDate?: string) => {
@@ -32,10 +31,24 @@ export const toggleUserLock = (userId: number) => {
     return api.put(`/admin/user/${userId}/toggle-lock`);
 }
 
+export const getLockedUsers = () => {
+    return api.get<IAdminUser[]>('/admin/user/locked');
+}
+
 // --- QUẢN LÝ SÁCH ---
 export const adminGetAllBooks = (pageNumber = 1, pageSize = 10) => {
     return api.get<IPagedResponse<IBook>>('/admin/book/all', {
         params: { pageNumber, pageSize },
+    });
+}
+
+export const getOutOfStockBooks = () => {
+    return api.get<IBook[]>('/admin/book/out-of-stock');
+}
+
+export const getTopQuantityBooks = (top: number = 10) => {
+    return api.get<IBook[]>('/admin/book/top-quantity', {
+        params: { top },
     });
 }
 
@@ -82,3 +95,7 @@ export const uploadBookCover = (file: File) => {
         },
     });
 };
+
+export const getAdminDashboardStats = () => {
+    return api.get<IAdminDashboardStats>(`/admin/dashboard`);
+}

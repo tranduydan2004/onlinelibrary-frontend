@@ -1,7 +1,9 @@
 // src/pages/admin/ManageBooks.tsx
 import React, { useState, useEffect } from 'react';
-import { adminGetAllBooks, addBook, deleteBook, uploadBookCover, updateBook } from '../../services/adminService';
+import { adminGetAllBooks, addBook, deleteBook, uploadBookCover, updateBook, getOutOfStockBooks, getTopQuantityBooks } from '../../services/adminService';
 import { IBook } from '../../types';
+
+type BookFilterMode = 'ALL' | 'OUT_OF_STOCK' | 'TOP_QUANTITY';
 
 const ManageBooks = () => {
     const [books, setBooks] = useState<IBook[]>([]);
@@ -9,6 +11,9 @@ const ManageBooks = () => {
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 10;
     
+    const [filterMode, setFilterMode] = useState<BookFilterMode>('ALL');
+    const [loading, setLoading] = useState(false);
+
     // State cho form thêm sách mới
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -27,16 +32,39 @@ const ManageBooks = () => {
     const [editCoverFile, setEditCoverFile] = useState<File | null>(null);
     const [editCoverImageUrl, setEditCoverImageUrl] = useState<string>('');
 
-    const fetchBooks = async (pageNumber = 1) => {
+    const fetchBooks = async (pageNumber = 1, mode: BookFilterMode = filterMode) => {
         try {
-            const res = await adminGetAllBooks(pageNumber, pageSize);
-            setBooks(res.data.items);
-            setPage(res.data.pageNumber);
-            setTotalPages(res.data.totalPages);
+            setLoading(true);
+
+            if (mode === 'ALL') {
+                const res = await adminGetAllBooks(pageNumber, pageSize);
+                setBooks(res.data.items);
+                setPage(res.data.pageNumber);
+                setTotalPages(res.data.totalPages);
+            }
+            else if (mode === 'OUT_OF_STOCK') {
+                const res = await getOutOfStockBooks();
+                setBooks(res.data);
+                setPage(1);
+                setTotalPages(1);
+            }
+            else {
+                const res = await getTopQuantityBooks(10);
+                setBooks(res.data);
+                setPage(1);
+                setTotalPages(1);
+            }
         } catch (error) {
             console.error("Lỗi khi tải danh sách sách:", error);
+        } finally {
+            setLoading(false);
         }
     };
+
+    const changeFilterMode = (mode: BookFilterMode) => {
+        setFilterMode(mode);
+        fetchBooks(1, mode);
+    }
 
     const startEditBook = (book: IBook) => {
         setEditingBook(book);
@@ -50,7 +78,7 @@ const ManageBooks = () => {
         setSuccess('');
     };
 
-    useEffect(() => { fetchBooks(1); }, []);
+    useEffect(() => { fetchBooks(1, 'ALL'); }, []);
 
     const handleAddBook = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,7 +109,7 @@ const ManageBooks = () => {
             setQuantity('1');
             setCoverFile(null);
             // Tải lại danh sách
-            fetchBooks();
+            fetchBooks(filterMode === 'ALL' ? page : 1, filterMode);
         } catch (error) {
             console.error("Lỗi khi thêm sách:", error);
             setError('Thêm sách thất bại. Vui lòng thử lại.');
@@ -92,7 +120,7 @@ const ManageBooks = () => {
         if (window.confirm('Bạn có chắc chắn muốn xóa sách này? Hành động này không thể hoàn tác.')) {
             try {
                 await deleteBook(bookId);
-                fetchBooks(); // Tải lại danh sách
+                fetchBooks(filterMode === 'ALL' ? page : 1, filterMode); // Tải lại danh sách
             } catch (error) {
                 console.error("Lỗi khi xóa sách:", error);
                 alert('Xóa sách thất bại. Sách có thể đang được mượn.');
@@ -138,7 +166,7 @@ const ManageBooks = () => {
             setEditQuantity('1');
             setEditCoverImageUrl('');
             setEditCoverFile(null);
-            fetchBooks(); // Tải lại danh sách
+            fetchBooks(filterMode === 'ALL' ? page : 1, filterMode); // Tải lại danh sách
         } catch (err) {
             console.error("Lỗi khi cập nhật sách:", err);
             setError('Cập nhật sách thất bại. Vui lòng thử lại.');
@@ -267,83 +295,124 @@ const ManageBooks = () => {
                 </div>
             )}
 
-            {/* Bảng sách */}
+            {/* Bảng sách + filter */}
             <div className="card table-card">
-                <h3 className="page-title" style={{ fontSize: '1.1rem' }}>
-                Danh sách sách
-                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: 12,
+                        gap: 8,
+                        flexWrap: 'wrap',
+                    }}
+                >
+                    <h3 className="page-title" style={{ fontSize: '1.1rem', marginBottom: 0 }}>
+                        Danh sách sách
+                    </h3>
 
-                <table className="table-modern">
-                <thead>
-                    <tr>
-                    <th>ID</th>
-                    <th>Tên sách</th>
-                    <th>Tác giả</th>
-                    <th>Thể loại</th>
-                    <th>Tồn kho</th>
-                    <th>Ảnh bìa</th>
-                    <th>Hành động</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {books.map((book) => (
-                    <tr key={book.id}>
-                        <td>{book.id}</td>
-                        <td>{book.title}</td>
-                        <td>{book.author}</td>
-                        <td>{book.genre}</td>
-                        <td>{book.quantity}</td>
-                        <td>
-                        {book.coverImageUrl ? (
-                            <img
-                            src={book.coverImageUrl}
-                            alt={book.title}
-                            style={{ width: 40, height: 60, objectFit: 'cover' }}
-                            />
-                        ) : (
-                            'Chưa có ảnh'
-                        )}
-                        </td>
-                        <td>
-                        <button className="btn btn-ghost" onClick={() => startEditBook(book)}>
-                            Sửa
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        <button
+                            type="button"
+                            className={`btn ${filterMode === 'ALL' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => changeFilterMode('ALL')}
+                        >
+                            Tất cả
                         </button>
                         <button
-                            className="btn btn-ghost"
-                            style={{ color: '#b91c1c' }}
-                            onClick={() => handleDelete(book.id)}
+                            type="button"
+                            className={`btn ${filterMode === 'OUT_OF_STOCK' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => changeFilterMode('OUT_OF_STOCK')}
                         >
-                            Xóa
+                            Sách đã hết số lượng
                         </button>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>  
-                </table>
-
-                {totalPages > 1 && (
-                <div className="pagination">
-                    <button
-                    className="btn btn-ghost"
-                    disabled={page === 1}
-                    onClick={() => fetchBooks(page - 1)}
-                    >
-                    Trang trước
-                    </button>
-
-                    <span>
-                    Trang {page}/{totalPages}
-                    </span>
-                    
-                    <button
-                    className="btn btn-ghost"
-                    disabled={page === totalPages}
-                    onClick={() => fetchBooks(page + 1)}
-                    >
-                    Trang sau
-                    </button>
+                        <button
+                            type="button"
+                            className={`btn ${filterMode === 'TOP_QUANTITY' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => changeFilterMode('TOP_QUANTITY')}
+                        >
+                            Top số lượng nhiều nhất
+                        </button>
+                    </div>
                 </div>
+
+                {loading ? (
+                    <div style={{ padding: '12px 0' }}>Đang tải...</div>
+                ) : (
+                    <>
+                        <table className="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên sách</th>
+                                    <th>Tác giả</th>
+                                    <th>Thể loại</th>
+                                    <th>Tồn kho</th>
+                                    <th>Ảnh bìa</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {books.map((book) => (
+                                    <tr key={book.id}>
+                                        <td>{book.id}</td>
+                                        <td>{book.title}</td>
+                                        <td>{book.author}</td>
+                                        <td>{book.genre}</td>
+                                        <td>{book.quantity}</td>
+                                        <td>
+                                            {book.coverImageUrl ? (
+                                                <img
+                                                    src={book.coverImageUrl}
+                                                    alt={book.title}
+                                                    style={{ width: 40, height: 60, objectFit: 'cover' }}
+                                                />
+                                            ) : (
+                                                'Chưa có ảnh'
+                                            )}
+                                        </td>
+                                        <td>
+                                            <button className="btn btn-ghost" onClick={() => startEditBook(book)}>
+                                                Sửa
+                                            </button>
+                                            <button
+                                                className="btn btn-ghost"
+                                                style={{ color: '#b91c1c' }}
+                                                onClick={() => handleDelete(book.id)}
+                                            >
+                                                Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {filterMode === 'ALL' && totalPages > 1 && (
+                            <div className="pagination">
+                                <button
+                                    className="btn btn-ghost"
+                                    disabled={page === 1}
+                                    onClick={() => fetchBooks(page - 1, 'ALL')}
+                                >
+                                    Trang trước
+                                </button>
+
+                                <span>
+                                    Trang {page}/{totalPages}
+                                </span>
+
+                                <button
+                                    className="btn btn-ghost"
+                                    disabled={page === totalPages}
+                                    onClick={() => fetchBooks(page + 1, 'ALL')}
+                                >
+                                    Trang sau
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

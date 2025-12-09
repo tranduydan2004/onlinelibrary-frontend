@@ -30,7 +30,7 @@ const ProfilePage: React.FC = () => {
 
         try {
             await updateMyProfile(email, phoneNumber);
-            setMessage("Cập nhật thônng tin thành công. Nếu bạn đổi email, vui lòng kiểm tra hộp thư để xác thực.");
+            setMessage("Cập nhật thông tin thành công. Nếu bạn đổi email, vui lòng kiểm tra hộp thư để xác thực.");
         } catch (err: any) {
             if (err.response?.data?.error) {
                 setError(err.response.data.error);
