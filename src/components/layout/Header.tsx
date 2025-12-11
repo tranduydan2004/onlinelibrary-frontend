@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
+import logoImg from '../../assets/online-library-logo.png';
+
 const Header = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -20,7 +22,9 @@ const Header = () => {
         <header className="main-header">
             <div className="main-header-inner">
                 <Link to="/" className="brand">
-                <div className="brand-logo">📚</div>
+                <div className="brand-logo">
+                    <img src={logoImg} alt="OnlineLibrary Logo" />
+                </div>
                 <div className="brand-text">
                     <span className="brand-title">OnlineLibrary</span>
                     <span className="brand-sub">Đọc – Mượn – Quản lý sách dễ dàng</span>
