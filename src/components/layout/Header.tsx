@@ -16,6 +16,7 @@ const Header = () => {
 
     const isActive = (path: string) => location.pathname === path ? 'nav-link nav-link-active' : 'nav-link';
 
+    // Nếu chưa đăng nhập thì hiển thị chữ G (Guest)
     const firstLetter = user?.username?.charAt(0).toUpperCase() ?? 'G';
 
     return (
@@ -36,6 +37,11 @@ const Header = () => {
                     Thư viện
                 </Link>
 
+                {/* Guest, User, Admin đều thấy thể loại */}
+                <Link to="/genres" className={isActive('/genres')}>
+                        Thể loại
+                </Link>
+
                 {user?.role === 'User' && (
                     <>
                     <Link to="/history" className={isActive('/history')}>
@@ -44,9 +50,7 @@ const Header = () => {
                     <Link to="/profile" className={isActive('/profile')}>
                         Trang cá nhân
                     </Link>
-                    <Link to="/genres" className={isActive('/genres')}>
-                        Thể loại
-                    </Link>
+                    
                     </>
                 )}
 
@@ -55,14 +59,11 @@ const Header = () => {
                     <Link to="/admin" className={location.pathname.startsWith('/admin') ? 'nav-link nav-link-active' : 'nav-link'}>
                     Quản trị
                     </Link>
-
-                    <Link to="/genres" className={isActive('/genres')}>
-                        Thể loại
-                    </Link>
                     </>
                 )}
                 </nav>
 
+                {/* Khu vực User / Guest */}
                 <div className="nav-user">
                 {user ? (
                     <>
