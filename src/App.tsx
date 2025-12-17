@@ -34,6 +34,12 @@ function App() {
             <Routes>
               
               {/* Public */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/book/:id" element={<BookDetailPage />} />
+              <Route path="/genres" element={<GenrePage />} />
+              <Route path="/genres/books" element={<BooksByGenrePage />} />
+
+              {/* Auth */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -42,12 +48,8 @@ function App() {
 
               {/* User */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<HomePage />} />
                 <Route path="/history" element={<LoanHistoryPage />} />
-                <Route path="/book/:id" element={<BookDetailPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/genres" element={<GenrePage />} />
-                <Route path="/genres/books" element={<BooksByGenrePage />} />
               </Route>
 
               {/* Admin */}
