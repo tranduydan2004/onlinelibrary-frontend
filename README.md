@@ -49,6 +49,7 @@ Khi bạn đã sẵn sàng triển khai (deploy) lên server, hãy chạy lệnh
    ```bash
    npm run build
 
+
 Lệnh này sẽ đóng gói ứng dụng React vào thư mục build, thu nhỏ code và tối ưu hóa hiệu suất tốt nhất.
 
 #### Cấu trúc thư mục tham khảo
@@ -65,6 +66,7 @@ Lệnh này sẽ đóng gói ứng dụng React vào thư mục build, thu nhỏ
    │   └── index.tsx         # Entry point kết nối React với DOM
    ├── package.json          # Quản lý thư viện và scripts
    └── tsconfig.json         # Cấu hình TypeScript
+
 
 ##### Các tính năng nổi bật
 
