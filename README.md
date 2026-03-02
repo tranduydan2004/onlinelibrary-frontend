@@ -27,7 +27,7 @@ Dự án sử dụng các công nghệ hiện đại để đảm bảo hiệu s
 
 1. **Clone repository về máy:**
    ```bash
-   git clone [https://github.com/tranduydan2004/onlinelibrary-frontend.git](https://github.com/tranduydan2004/onlinelibrary-frontend.git)
+   git clone https://github.com/tranduydan2004/onlinelibrary-frontend.git
    cd onlinelibrary-frontend
 
 2. **Cài đặt các dependencies:**
@@ -35,25 +35,24 @@ Dự án sử dụng các công nghệ hiện đại để đảm bảo hiệu s
    npm install
 
 3. **Cấu hình biến môi trường (Nếu cần thay đổi):**
-- Tạo file .env ở thư mục gốc và cấu hình URL trỏ đến Backend API của bạn (ví dụ: REACT_APP_API_URL=http://localhost:5000/api).
+- Tạo file .env ở thư mục gốc và cấu hình URL trỏ đến Backend API của bạn.
+- Ví dụ:
+   ```env
+   REACT_APP_API_URL=http://localhost:5000/api).
 
 4. **Khởi chạy ứng dụng:**
    ```bash
    npm start
-
 Ứng dụng sẽ tự động khởi chạy và mở tại địa chỉ http://localhost:3000. Mọi thay đổi trong code sẽ được tự động cập nhật (hot-reload) trên trình duyệt.
 
 ### Build cho môi trường Production
 
-Khi bạn đã sẵn sàng triển khai (deploy) lên server, hãy chạy lệnh sau để tối ưu hóa ứng dụng:
+- Khi bạn đã sẵn sàng triển khai (deploy) lên server, hãy chạy lệnh sau để tối ưu hóa ứng dụng:
    ```bash
    npm run build
-
-
 Lệnh này sẽ đóng gói ứng dụng React vào thư mục build, thu nhỏ code và tối ưu hóa hiệu suất tốt nhất.
 
-#### Cấu trúc thư mục tham khảo
-
+### Cấu trúc thư mục tham khảo
    ```bash
    onlinelibrary-frontend/
    ├── public/               # Chứa các file tĩnh (index.html, favicon,...)
@@ -66,10 +65,9 @@ Lệnh này sẽ đóng gói ứng dụng React vào thư mục build, thu nhỏ
    │   └── index.tsx         # Entry point kết nối React với DOM
    ├── package.json          # Quản lý thư viện và scripts
    └── tsconfig.json         # Cấu hình TypeScript
+```
 
-
-##### Các tính năng nổi bật
-
+### Các tính năng nổi bật
 - **Trải nghiệm mượt mà:** Xây dựng dưới dạng SPA (Single Page Application) giúp chuyển trang không bị giật lag.
 - **Tìm kiếm và Lọc Sách:** Trải nghiệm tìm kiếm nhanh chóng, lọc theo danh mục, tác giả.
 - **Quản lý Tài khoản cá nhân:** Đăng nhập, đăng ký và theo dõi lịch sử mượn/trả sách.
